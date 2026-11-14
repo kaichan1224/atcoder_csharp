@@ -915,27 +915,12 @@ public class Program
     public static readonly double pi = Math.PI;
 
     // 問題文の入力例をここにそのまま貼り付ける。
-    private const string SampleInput = @"5 2
-3 5";
+    private const string SampleInput = @"
+";
 
     public static void Main()
     {
         // ローカル確認時だけコメントを外す。提出時はコメントアウトする。
-        // Console.SetIn(new StringReader(SampleInput));
-
-        int[] firstLine = Input.ArrayInt(); // N Q
-        int n = firstLine[0];
-        int q = firstLine[1];
-        int[] flips = Input.ArrayInt(); // K1 ... KQ
-
-        int[] cards = Enumerable.Range(1, n).ToArray();
-        for (int i = 0; i < q; i++)
-        {
-            int k = flips[i];
-            Array.Reverse(cards, 0, k);
-            for (int j = 0; j < k; j++)cards[j] = -cards[j];
-        }
-
-        Output.Print(cards, Environment.NewLine);
+        Console.SetIn(new StringReader(SampleInput));
     }
 }
