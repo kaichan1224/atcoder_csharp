@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+
+// AtcoderのTemplate
+// https://github.com/kaichan1224/atcoder_csharp/blob/main/Template.cs
+
+
 #region 入力受け取りフォーマット
 /// <summary>
 /// 入力受け取りクラス
@@ -14,61 +19,122 @@ public class Input
     /// 単一整数(int)
     /// </summary>
     /// <returns></returns>
-    public static int Int() => int.Parse(Console.ReadLine());
+    public static int Int() => int.Parse(Console.ReadLine()!);
 
     /// <summary>
     /// 単一整数(long)
     /// </summary>
     /// <returns></returns>
-    public static long Long() => long.Parse(Console.ReadLine());
+    public static long Long() => long.Parse(Console.ReadLine()!);
 
     /// <summary>
     /// 単一文字列
     /// </summary>
     /// <returns></returns>
-    public static string String() => Console.ReadLine();
+    public static string String() => Console.ReadLine()!;
 
     /// <summary>
     /// 整数配列(int)
     /// </summary>
     /// <returns></returns>
-    public static int[] ArrayInt() => Console.ReadLine().Split(' ').Select(int.Parse).ToArray();
+    public static int[] ArrayInt()
+    {
+        ReadOnlySpan<char> line = Console.ReadLine()!.AsSpan();
+        int count = CountTokens(line);
+        var values = new int[count];
+        int index = 0;
+        for (int i = 0; i < count; i++)
+        {
+            SkipWhitespace(line, ref index);
+            int start = index;
+            while (index < line.Length && !char.IsWhiteSpace(line[index])) index++;
+            values[i] = int.Parse(line.Slice(start, index - start));
+        }
+        return values;
+    }
 
     /// <summary>
     /// 整数配列(long)
     /// </summary>
     /// <returns></returns>
-    public static long[] ArrayLong() => Console.ReadLine().Split(' ').Select(long.Parse).ToArray();
+    public static long[] ArrayLong()
+    {
+        ReadOnlySpan<char> line = Console.ReadLine()!.AsSpan();
+        int count = CountTokens(line);
+        var values = new long[count];
+        int index = 0;
+        for (int i = 0; i < count; i++)
+        {
+            SkipWhitespace(line, ref index);
+            int start = index;
+            while (index < line.Length && !char.IsWhiteSpace(line[index])) index++;
+            values[i] = long.Parse(line.Slice(start, index - start));
+        }
+        return values;
+    }
+
+    private static int CountTokens(ReadOnlySpan<char> line)
+    {
+        int count = 0;
+        int index = 0;
+        while (index < line.Length)
+        {
+            SkipWhitespace(line, ref index);
+            if (index == line.Length) break;
+            count++;
+            while (index < line.Length && !char.IsWhiteSpace(line[index])) index++;
+        }
+        return count;
+    }
+
+    private static void SkipWhitespace(ReadOnlySpan<char> line, ref int index)
+    {
+        while (index < line.Length && char.IsWhiteSpace(line[index])) index++;
+    }
 
     /// <summary>
     /// 文字配列(空白区切り)
     /// </summary>
     /// <returns></returns>
-    public static string[] ArrayString() => Console.ReadLine().Split(' ');
+    public static string[] ArrayString() => Console.ReadLine()!.Split(' ');
 
     /// <summary>
     /// 整数リスト(int)
     /// </summary>
     /// <returns></returns>
-    public static List<int> ListInt() => Console.ReadLine().Split(' ').Select(int.Parse).ToList();
+    public static List<int> ListInt()
+    {
+        ReadOnlySpan<char> line = Console.ReadLine()!.AsSpan();
+        var values = new List<int>(CountTokens(line));
+        int index = 0;
+        while (index < line.Length)
+        {
+            SkipWhitespace(line, ref index);
+            if (index == line.Length) break;
+            int start = index;
+            while (index < line.Length && !char.IsWhiteSpace(line[index])) index++;
+            values.Add(int.Parse(line.Slice(start, index - start)));
+        }
+        return values;
+    }
 
     /// <summary>
     /// 文字列リスト(空白区切り)
     /// </summary>
     /// <returns></returns>
-    public static List<string> ListString() => Console.ReadLine().Split(' ').ToList();
+    public static List<string> ListString() => ArrayString().ToList();
 
     /// <summary>
     /// 文字配列(1文字区切り)
     /// </summary>
     /// <returns></returns>
-    public static char[] ArrayChar() => Console.ReadLine().ToCharArray();
+    public static char[] ArrayChar() => Console.ReadLine()!.ToCharArray();
 
     /// <summary>
     /// 文字リスト(1文字区切り)
     /// </summary>
     /// <returns></returns>
-    public static List<char> ListChar() => Console.ReadLine().ToCharArray().ToList();
+    public static List<char> ListChar() => Console.ReadLine()!.ToCharArray().ToList();
 
     /// <summary>
     /// 複数行整数リスト(int)
@@ -191,23 +257,25 @@ public class Output
     /// </summary>
     /// <param name="output">出力するデータ</param>
     /// <param name="separator">配列の要素の間に挟む文字列(default = " ")</param>
-    public static void Print(object output, string separator = " ")
+    public static void Print(object? output, string separator = " ")
     {
-        Console.WriteLine(Format(output, separator));
+        WriteFormatted(Console.Out, output, separator);
+        Console.WriteLine();
     }
 
-    /// <summary>
-    /// 入力値整形
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="separator"></param>
-    /// <returns></returns>
-    private static string Format(object obj, string separator)
+    internal static void WriteFormatted(TextWriter writer, object? obj, string separator)
     {
-        // 単一データの出力
-        if (obj is string || obj.GetType().IsPrimitive)
+        if (obj == null)
         {
-            return obj.ToString();
+            writer.Write("null");
+            return;
+        }
+
+        // 単一データの出力
+        if (obj is string || obj is char || obj.GetType().IsPrimitive || obj is decimal)
+        {
+            writer.Write(obj);
+            return;
         }
 
         // 二次元配列
@@ -215,39 +283,67 @@ public class Output
         {
             int rows = array.GetLength(0);
             int cols = array.GetLength(1);
-            var sb = new StringBuilder();
-
             for (int i = 0; i < rows; i++)
             {
-                var row = new List<string>();
+                if (i > 0) writer.WriteLine();
                 for (int j = 0; j < cols; j++)
                 {
-                    object item = array.GetValue(i, j);
-                    row.Add(Format(item, separator));
+                    if (j > 0) writer.Write(separator);
+                    WriteFormatted(writer, array.GetValue(i, j), separator);
                 }
-                sb.AppendLine(string.Join(separator, row));
             }
-
-            return sb.ToString().TrimEnd();
+            return;
         }
 
         // IEnumerable
         if (obj is System.Collections.IEnumerable enumerable)
         {
-            var lines = new List<string>();
-
-            foreach (var item in enumerable)
+            var iterator = enumerable.GetEnumerator();
+            try
             {
-                lines.Add(item.ToString());
+                if (!iterator.MoveNext()) return;
+                object? item = iterator.Current;
+                bool hasNestedCollection = item is System.Collections.IEnumerable && item is not string;
+                WriteFormatted(writer, item, separator);
+                while (iterator.MoveNext())
+                {
+                    writer.Write(hasNestedCollection ? Environment.NewLine : separator);
+                    WriteFormatted(writer, iterator.Current, separator);
+                }
             }
-
-            return string.Join(separator, lines);
+            finally
+            {
+                (iterator as IDisposable)?.Dispose();
+            }
+            return;
         }
 
-        return obj.ToString();
+        writer.Write(obj);
     }
 }
 #endregion 出力簡略化
+
+#region デバッグログ
+/// <summary>
+/// デバッグ用ログ。標準エラーに出力するため、提出時の標準出力に影響しない。
+/// </summary>
+public class Log
+{
+    /// <summary>
+    /// 複数の値を空白区切りで標準エラーに出力する。
+    /// 配列や入れ子のコレクションも再帰的に整形する。
+    /// </summary>
+    public static void Print(params object[] values)
+    {
+        for (int i = 0; i < values.Length; i++)
+        {
+            if (i > 0) Console.Error.Write(' ');
+            Output.WriteFormatted(Console.Error, values[i], " ");
+        }
+        Console.Error.WriteLine();
+    }
+}
+#endregion デバッグログ
 
 #region 便利ツール
 /// <summary>
@@ -571,6 +667,7 @@ public class Graph
     {
         this._vertex = V;
         this._E = E;
+        this._dist = new int[V];
         this._graph = new List<List<int>>();
         for (int i = 0; i < _vertex; i++)
             _graph.Add(new List<int>());
@@ -632,6 +729,7 @@ public class GridGraph
     {
         this.row = row;
         this.col = col;
+        this.dist = new int[row, col];
         this.grid = Input.MatrixChar(row, col);
     }
 
@@ -813,25 +911,31 @@ public class SegmentTree<T>
 
 public class Program
 {
-    static long mod = 1000000007;
-    static double pi = Math.PI;
+    public static readonly long mod = 1000000007;
+    public static readonly double pi = Math.PI;
+
+    // 問題文の入力例をここにそのまま貼り付ける。
+    private const string SampleInput = @"5 2
+3 5";
 
     public static void Main()
     {
-        var N = Input.Int();
-        int ans = 0;
+        // ローカル確認時だけコメントを外す。提出時はコメントアウトする。
+        // Console.SetIn(new StringReader(SampleInput));
 
-        if (N % 2 == 0)
-        {
-            ans = N / 2;
-        }
-        else if (N % 2 == 1)
-        {
-            ans = N / 2 + 1;
-        }
-        else
-            ans = 0;
+        int[] firstLine = Input.ArrayInt(); // N Q
+        int n = firstLine[0];
+        int q = firstLine[1];
+        int[] flips = Input.ArrayInt(); // K1 ... KQ
 
-        Console.WriteLine(ans);
+        int[] cards = Enumerable.Range(1, n).ToArray();
+        for (int i = 0; i < q; i++)
+        {
+            int k = flips[i];
+            Array.Reverse(cards, 0, k);
+            for (int j = 0; j < k; j++)cards[j] = -cards[j];
+        }
+
+        Output.Print(cards, Environment.NewLine);
     }
 }
