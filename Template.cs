@@ -914,13 +914,139 @@ public class Program
     public static readonly long mod = 1000000007;
     public static readonly double pi = Math.PI;
 
-    // 問題文の入力例をここにそのまま貼り付ける。
-    private const string SampleInput = @"
-";
-
     public static void Main()
     {
-        // ローカル確認時だけコメントを外す。提出時はコメントアウトする。
+        // ABC482 B 入力例1（問題文の入力部分をここにそのまま貼り付ける）
+        const string SampleInput = @"";
+
+        // ローカル確認用。提出時はコメントアウトする。
         Console.SetIn(new StringReader(SampleInput));
+
+        // 受け取り例: 5行×5文字の o/. を char[,] として読み込む。
+        // char[,] grid = Input.MatrixChar(5, 5);
+
+        /* 整数1つ
+         * 入力: 42
+         * const string SampleInput = @"42";
+         * Console.SetIn(new StringReader(SampleInput));
+         * int n = Input.Int();
+         */
+
+        /* long整数1つ
+         * 入力: 12345678901
+         * const string SampleInput = @"12345678901";
+         * Console.SetIn(new StringReader(SampleInput));
+         * long n = Input.Long();
+         */
+
+        /* 文字列1つ
+         * 入力: atcoder
+         * const string SampleInput = @"atcoder";
+         * Console.SetIn(new StringReader(SampleInput));
+         * string s = Input.String();
+         */
+
+        /* int配列（1行・空白区切り）
+         * 入力: 1 2 3 4
+         * const string SampleInput = @"1 2 3 4";
+         * Console.SetIn(new StringReader(SampleInput));
+         * int[] values = Input.ArrayInt();
+         */
+
+        /* long配列（1行・空白区切り）
+         * 入力: 10000000000 20000000000
+         * const string SampleInput = @"10000000000 20000000000";
+         * Console.SetIn(new StringReader(SampleInput));
+         * long[] values = Input.ArrayLong();
+         */
+
+        /* 文字列配列 / 文字列リスト
+         * 入力: red green blue
+         * const string SampleInput = @"red green blue";
+         * Console.SetIn(new StringReader(SampleInput));
+         * string[] array = Input.ArrayString();
+         * List<string> list = Input.ListString();
+         */
+
+        /* intリスト
+         * 入力: 10 20 30
+         * const string SampleInput = @"10 20 30";
+         * Console.SetIn(new StringReader(SampleInput));
+         * List<int> values = Input.ListInt();
+         */
+
+        /* char配列 / charリスト（1行を1文字ずつ）
+         * 入力: abcde
+         * const string SampleInput = @"abcde";
+         * Console.SetIn(new StringReader(SampleInput));
+         * char[] array = Input.ArrayChar();
+         * List<char> list = Input.ListChar();
+         */
+
+        /* 複数行のintリスト（3行）
+         * 入力:
+         * 1 2
+         * 3 4
+         * 5 6
+         * const string SampleInput = @"1 2
+         * 3 4
+         * 5 6";
+         * Console.SetIn(new StringReader(SampleInput));
+         * List<List<int>> values = Input.NestedInt(3);
+         */
+
+        /* 複数行の文字列リスト（2行）
+         * 入力:
+         * red blue
+         * green yellow
+         * const string SampleInput = @"red blue
+         * green yellow";
+         * Console.SetIn(new StringReader(SampleInput));
+         * List<List<string>> values = Input.NestedString(2);
+         */
+
+        /* 複数行のcharリスト（3行）
+         * 入力:
+         * abc
+         * def
+         * ghi
+         * const string SampleInput = @"abc
+         * def
+         * ghi";
+         * Console.SetIn(new StringReader(SampleInput));
+         * List<List<char>> values = Input.NestedChar(3);
+         */
+
+        /* 2次元int配列（2行×3列）
+         * 入力:
+         * 1 2 3
+         * 4 5 6
+         * const string SampleInput = @"1 2 3
+         * 4 5 6";
+         * Console.SetIn(new StringReader(SampleInput));
+         * int[,] matrix = Input.MatrixInt(2, 3);
+         */
+
+        /* 2次元文字列配列（2行×3列）
+         * 入力:
+         * aa bb cc
+         * dd ee ff
+         * const string SampleInput = @"aa bb cc
+         * dd ee ff";
+         * Console.SetIn(new StringReader(SampleInput));
+         * string[,] matrix = Input.MatrixString(2, 3);
+         */
+
+        /* 2次元char配列 / グリッド（3行×3列）
+         * 入力:
+         * o..
+         * .o.
+         * ..o
+         * const string SampleInput = @"o..
+         * .o.
+         * ..o";
+         * Console.SetIn(new StringReader(SampleInput));
+         * char[,] grid = Input.MatrixChar(3, 3);
+         */
     }
 }
